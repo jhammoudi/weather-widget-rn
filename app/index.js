@@ -5,34 +5,52 @@ import {
   View,
   Alert,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { fetchWeather } from "../utils/ApiClient";
 import CurrentWidget from "../components/CurrentWeather";
 import ForecastWeather from "../components/ForecastWeather";
 import { useLocationStore } from "../store";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, SplashScreen } from "expo-router";
 import * as Location from "expo-location";
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 export default function Page() {
+  const [appIsReady, setAppIsReady] = useState(false);
   const [weatherData, setWeatherData] = useState({});
   const [units] = useState("metric");
   const { location, setLocation } = useLocationStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   useEffect(() => {
     const getLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission to access location was denied");
-        return;
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission to access location was denied");
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({});
+
+        setLocation({
+          lat: location.coords.latitude,
+          lon: location.coords.longitude,
+        });
+      } catch (e) {
+        console.log(e);
+        setError({
+          msg: e.message,
+          EXPO_PUBLIC_WEATHER_API_URL: process.env.EXPO_PUBLIC_WEATHER_API_URL,
+          EXPO_PUBLIC_WEATHER_GEO_API_URL:
+            process.env.EXPO_PUBLIC_WEATHER_GEO_API_URL,
+        });
+      } finally {
+        setAppIsReady(true);
       }
-
-      const location = await Location.getCurrentPositionAsync({});
-
-      setLocation({
-        lat: location.coords.latitude,
-        lon: location.coords.longitude,
-      });
     };
 
     getLocation();
@@ -47,6 +65,13 @@ export default function Page() {
           setWeatherData(data);
         } catch (e) {
           console.log(e);
+          setError({
+            msg: e.message,
+            EXPO_PUBLIC_WEATHER_API_URL:
+              process.env.EXPO_PUBLIC_WEATHER_API_URL,
+            EXPO_PUBLIC_WEATHER_GEO_API_URL:
+              process.env.EXPO_PUBLIC_WEATHER_GEO_API_URL,
+          });
         } finally {
           setIsLoading(false);
         }
@@ -57,6 +82,21 @@ export default function Page() {
       }
     }, [units, location])
   );
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
 
   const currentWeather = weatherData?.current;
   const forecastWeather = weatherData?.forecast;
@@ -69,8 +109,11 @@ export default function Page() {
     );
   }
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} onLayout={onLayoutRootView}>
       <View style={styles.main}>
+        {!!error && (
+          <Text style={styles.error}>Error: {JSON.stringify(error)}</Text>
+        )}
         <CurrentWidget data={currentWeather} />
         <ForecastWeather data={forecastWeather} />
       </View>
@@ -90,5 +133,10 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
+  },
+  error: {
+    color: "red",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });

@@ -4,8 +4,29 @@
     "web": {
       "bundler": "metro"
     },
+    "orientation": "portrait",
     "plugins": ["expo-router"],
-    "name": "weather-widget-rn",
-    "slug": "weather-widget-rn"
+    "name": "Weather App",
+    "owner": "jihad.hammoudi",
+    "slug": "weather-widget-rn",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#005B96"
+    },
+    "icon": "./assets/icon.png",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ec2135ce-92b1-49c6-8386-055fa1486717"
+      }
+    },
+    "android": {
+      "package": "com.jhammoudi.weatherapp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.jhammoudi.weatherapp"
+    }
   }
 }

@@ -6,16 +6,19 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:local:android": "eas build -p android --profile local",
+    "create-secret": "eas secret:push --scope project --env-file .env"
   },
   "dependencies": {
     "@rneui/themed": "^4.0.0-rc.8",
     "expo": "^50.0.1",
     "expo-constants": "~15.4.5",
+    "expo-dev-client": "~3.3.9",
     "expo-linking": "~6.2.2",
     "expo-location": "~16.5.3",
     "expo-router": "~3.4.3",
-    "expo-splash-screen": "~0.26.3",
+    "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
