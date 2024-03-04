@@ -5,7 +5,16 @@
       "bundler": "metro"
     },
     "orientation": "portrait",
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "jihad-h",
+          "project": "weatherapp"
+        }
+      ]
+    ],
     "name": "Weather App",
     "owner": "jihad.hammoudi",
     "slug": "weather-widget-rn",
@@ -23,10 +32,18 @@
       }
     },
     "android": {
-      "package": "com.jhammoudi.weatherapp"
+      "package": "com.jhammoudi.weatherapp",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBQ2prJHq4NwFNPO2QJm5vtJAHaYw3x1Ic"
+        }
+      }
     },
     "ios": {
-      "bundleIdentifier": "com.jhammoudi.weatherapp"
+      "bundleIdentifier": "com.jhammoudi.weatherapp",
+      "config": {
+        "googleMapsApiKey": "AIzaSyA8OmUrogCCD6BKxCodq-hq4JFILErjRfk"
+      }
     }
   }
 }

@@ -34,6 +34,9 @@ export default function Page() {
         .then((results) => {
           setResults(results);
         })
+        .catch((e) => {
+          console.log(e);
+        })
         .finally(() => {
           setIsSearching(false);
         });
