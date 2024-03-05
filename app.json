@@ -30,20 +30,6 @@
       "eas": {
         "projectId": "ec2135ce-92b1-49c6-8386-055fa1486717"
       }
-    },
-    "android": {
-      "package": "com.jhammoudi.weatherapp",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBQ2prJHq4NwFNPO2QJm5vtJAHaYw3x1Ic"
-        }
-      }
-    },
-    "ios": {
-      "bundleIdentifier": "com.jhammoudi.weatherapp",
-      "config": {
-        "googleMapsApiKey": "AIzaSyA8OmUrogCCD6BKxCodq-hq4JFILErjRfk"
-      }
     }
   }
 }
