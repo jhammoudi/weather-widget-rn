@@ -67,6 +67,9 @@ const Map = () => {
           latitudeDelta: coordinateDelta,
           longitudeDelta: coordinateDelta,
         }}
+        showsUserLocation={true}
+        showsMyLocationButton={false}
+        showsCompass={false}
       >
         {markerLocation.longitude && markerLocation.latitude && (
           <Marker coordinate={markerLocation} />

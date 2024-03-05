@@ -12,7 +12,7 @@ export const unstable_settings = {
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DNS,
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  debug: process.env.NODE_ENV === "development" ? true : false,
   integrations: [
     new Sentry.ReactNativeTracing({
       // Pass instrumentation to be used as `routingInstrumentation`

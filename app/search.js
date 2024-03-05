@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text, Pressable } from "react-native";
+import * as Location from "expo-location";
 
 import Map from "../components/Map";
 import { SearchBar } from "@rneui/themed";
@@ -6,6 +7,7 @@ import { useState, useEffect } from "react";
 import useDebounce from "../utils/useDebounce";
 import { searchLocations } from "../utils/ApiClient";
 import { useMarkerLocationStore } from "../store";
+import Icon from "../components/Icon";
 
 export default function Page() {
   const [search, setSearch] = useState("");
@@ -23,6 +25,33 @@ export default function Page() {
   const handlePressSearchResult = ({ lat, lon }) => {
     setMarkerLocation({ longitude: lon, latitude: lat });
     setResults([]);
+  };
+
+  const handleLocateBtn = () => {
+    setResults([]);
+    setIsSearching(true);
+
+    const getLocation = async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission to access location was denied");
+          return;
+        }
+        const location = await Location.getCurrentPositionAsync({});
+
+        setMarkerLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    getLocation();
   };
 
   // this function will be triggered when the debouncedSearchTerm is modified
@@ -55,6 +84,7 @@ export default function Page() {
               showLoading={isSearching}
               containerStyle={{
                 borderWidth: 0,
+                flex: 1,
               }}
               inputContainerStyle={{
                 backgroundColor: "#393e42",
@@ -66,6 +96,14 @@ export default function Page() {
               onChangeText={updateSearch}
               value={search}
             />
+            <Pressable
+              onPress={handleLocateBtn}
+              style={({ pressed }) => pressed && styles.opacity}
+            >
+              <View style={styles.icon}>
+                <Icon name="locate" color="lightgrey" />
+              </View>
+            </Pressable>
           </View>
           <View style={styles.searchResults}>
             {results.map(({ country, name, state, lat, lon }, index) => {
@@ -115,8 +153,11 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   searchBar: {
+    flexDirection: "row",
     borderRadius: 20,
     overflow: "hidden",
+    backgroundColor: "#393e42",
+    alignItems: "center",
   },
   searchResults: {
     borderRadius: 20,
@@ -139,5 +180,11 @@ const styles = StyleSheet.create({
   },
   unpressedSearchResult: {
     backgroundColor: "#393e42",
+  },
+  icon: {
+    paddingRight: 15,
+  },
+  opacity: {
+    opacity: 0.4,
   },
 });

@@ -44,9 +44,6 @@ export default function Page() {
         console.log(e);
         setError({
           msg: e.message,
-          EXPO_PUBLIC_WEATHER_API_URL: process.env.EXPO_PUBLIC_WEATHER_API_URL,
-          EXPO_PUBLIC_WEATHER_GEO_API_URL:
-            process.env.EXPO_PUBLIC_WEATHER_GEO_API_URL,
         });
       } finally {
         setAppIsReady(true);
@@ -67,10 +64,6 @@ export default function Page() {
           console.log(e);
           setError({
             msg: e.message,
-            EXPO_PUBLIC_WEATHER_API_URL:
-              process.env.EXPO_PUBLIC_WEATHER_API_URL,
-            EXPO_PUBLIC_WEATHER_GEO_API_URL:
-              process.env.EXPO_PUBLIC_WEATHER_GEO_API_URL,
           });
         } finally {
           setIsLoading(false);
